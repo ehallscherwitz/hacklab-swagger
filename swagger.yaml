@@ -1,992 +1,2022 @@
----
-swagger: "2.0"
+openapi: 3.0.1
 info:
-  title: "HackLab API"
-  description: "API documentation for HackLab backend."
-  version: "1.0.0"
-host: "localhost:3000"
-basePath: "/api"
-schemes:
-  - "http"
+  title: HackLab API
+  description: API documentation for HackLab backend.
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/api
 paths:
-  /:
-    post:
-      summary: "Create a new project"
-      tags:
-        - "Projects"
-      consumes:
-        - "multipart/form-data"
-      parameters:
-        - in: formData
-          name: accessToken
-          type: string
-          description: "GitHub access token of user"
-          schema:
-            type: string
-            example: "ghp_1234567890"
-        - in: formData
-          name: projectDataString
-          type: string
-          description: "String for project data JSON object."
-          schema:
-            type: object
-            example: {
-              "title": "AI-Powered Task Manager",
-              "description": "A task manager that uses AI to suggest priorities.",
-              "short_description": "AI helps prioritize tasks.",
-              "type": "Web App",
-              "mvp": ["AI task prioritization"],
-              "stretch": ["Team collaboration"],
-              "timeline": {
-                "frontend": ["Create initial wireframes and mockups in Figma"],
-                "backend": ["Set up database schema in PostgreSQL"]
-              },
-              "team_lead_id": 1
-            }
-        - in: formData
-          name: thumbnail
-          type: file
-          required: false
-          description: "Thumbnail image file for the project."
-      responses:
-        201:
-          description: "Project created successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the created project."
-                example: 1
-              title:
-                type: string
-                description: "Title of the project."
-                example: "AI-Powered Task Manager"
-              description:
-                type: string
-                description: "Detailed description of the project."
-                example: "A task manager that uses AI to suggest priorities."
-              short_description:
-                type: string
-                description: "Short description of the project."
-                example: "AI helps prioritize tasks."
-              type:
-                type: string
-                description: "Type of the project."
-                example: "Web App"
-              mvp:
-                type: array
-                description: "MVP features of the project."
-                items:
-                  type: string
-                  example: "AI task prioritization"
-              stretch:
-                type: array
-                description: "Stretch features of the project."
-                items:
-                  type: string
-                  example: "Team collaboration"
-              timeline:
-                type: object
-                description: "Timeline for the project phases."
-                properties:
-                  frontend:
-                    type: array
-                    description: "List of frontend tasks."
-                    items:
-                      type: string
-                      example: "Create initial wireframes and mockups in Figma"
-                  backend:
-                    type: array
-                    description: "List of backend tasks."
-                    items:
-                      type: string
-                      example: "Set up database schema in PostgreSQL"
-              team_lead_id:
-                type: integer
-                description: "ID of the team lead for the project."
-                example: 1
-              github_repo_url:
-                type: string
-                description: "URL of the GitHub repository created for the project."
-                example: "https://github.com/user/repo"
-              thumbnail:
-                type: string
-                description: "URL of the uploaded thumbnail image."
-                example: "https://s3.amazonaws.com/bucket-name/thumbnail.png"
-        500:
-          description: "Server error."
+  /projects:
     get:
-      summary: "Retrieve a list of all projects"
       tags:
-        - "Projects"
+      - Projects
+      summary: Retrieve a list of all projects
       responses:
-        200:
-          description: "A list of all projects."
-          schema:
-            type: array
-            items:
+        "200":
+          description: A list of all projects.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the project.
+                      example: 1
+                    title:
+                      type: string
+                      description: Title of the project.
+                      example: AI-Powered Task Manager
+                    description:
+                      type: string
+                      description: Detailed description of the project.
+                      example: A task manager that uses AI to suggest priorities.
+                    short_description:
+                      type: string
+                      description: Short description of the project.
+                      example: AI helps prioritize tasks.
+                    type:
+                      type: string
+                      description: "Type of the project (e.g., Web App, Mobile App,\
+                        \ Desktop App)."
+                      example: Web App
+                    mvp:
+                      type: array
+                      description: MVP features of the project.
+                      example:
+                      - AI task prioritization
+                      - Basic task management
+                      items:
+                        type: string
+                    stretch:
+                      type: array
+                      description: Stretch features of the project.
+                      example:
+                      - Team collaboration
+                      - Voice input
+                      - Calendar sync
+                      items:
+                        type: string
+                    timeline:
+                      type: object
+                      properties:
+                        frontend:
+                          type: array
+                          description: List of frontend tasks.
+                          items:
+                            type: string
+                            example: Create initial wireframes and mockups in Figma
+                        backend:
+                          type: array
+                          description: List of backend tasks.
+                          items:
+                            type: string
+                            example: Set up database schema in PostgreSQL
+                      description: Timeline for the project phases.
+                    team_lead_id:
+                      type: integer
+                      description: ID of the team lead for the project.
+                      example: 1
+                    github_repo_url:
+                      type: string
+                      description: URL of the GitHub repository for the project.
+                      example: https://github.com/user/repo
+                    thumbnail:
+                      type: string
+                      description: URL of the uploaded thumbnail image.
+                      example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+        "500":
+          description: Server error.
+          content: {}
+    post:
+      tags:
+      - Projects
+      summary: Create a new project
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  description: "ID of the project."
-                  example: 1
-                title:
+                accessToken:
                   type: string
-                  description: "Title of the project."
-                  example: "AI-Powered Task Manager"
-                description:
+                  description: GitHub access token of user
+                projectDataString:
                   type: string
-                  description: "Detailed description of the project."
-                  example: "A task manager that uses AI to suggest priorities."
-                short_description:
-                  type: string
-                  description: "Short description of the project."
-                  example: "AI helps prioritize tasks."
-                type:
-                  type: string
-                  description: "Type of the project (e.g., Web App, Mobile App, Desktop App)."
-                  example: "Web App"
-                mvp:
-                  type: array
-                  description: "MVP features of the project."
-                  items:
-                    type: string
-                  example: ["AI task prioritization", "Basic task management"]
-                stretch:
-                  type: array
-                  description: "Stretch features of the project."
-                  items:
-                    type: string
-                  example: ["Team collaboration", "Voice input", "Calendar sync"]
-                timeline:
-                  type: object
-                  description: "Timeline for the project phases."
-                  properties:
-                    frontend:
-                      type: array
-                      description: "List of frontend tasks."
-                      items:
-                        type: string
-                        example: "Create initial wireframes and mockups in Figma"
-                    backend:
-                      type: array
-                      description: "List of backend tasks."
-                      items:
-                        type: string
-                        example: "Set up database schema in PostgreSQL"
-                team_lead_id:
-                  type: integer
-                  description: "ID of the team lead for the project."
-                  example: 1
-                github_repo_url:
-                  type: string
-                  description: "URL of the GitHub repository for the project."
-                  example: "https://github.com/user/repo"
+                  description: >
+                    String for project data JSON object. Example: 
+                    {
+                      "title": "AI-Powered Task Manager",
+                      "description": "A task manager that uses AI to suggest priorities.",
+                      "short_description": "AI helps prioritize tasks.",
+                      "type": "Web App",
+                      "mvp": ["AI task prioritization"],
+                      "stretch": ["Team collaboration"],
+                      "timeline": {
+                        "frontend": ["Create initial wireframes and mockups in Figma"],
+                        "backend": ["Set up database schema in PostgreSQL"]
+                      },
+                      "team_lead_id": 1
+                    }
                 thumbnail:
                   type: string
-                  description: "URL of the uploaded thumbnail image."
-                  example: "https://s3.amazonaws.com/bucket-name/thumbnail.png"
-        500:
-          description: "Server error."
-  /{id}:
+                  description: Thumbnail image file for the project.
+                  format: binary
+      responses:
+        "201":
+          description: Project created successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the created project.
+                    example: 1
+                  title:
+                    type: string
+                    description: Title of the project.
+                    example: AI-Powered Task Manager
+                  description:
+                    type: string
+                    description: Detailed description of the project.
+                    example: A task manager that uses AI to suggest priorities.
+                  short_description:
+                    type: string
+                    description: Short description of the project.
+                    example: AI helps prioritize tasks.
+                  type:
+                    type: string
+                    description: Type of the project.
+                    example: Web App
+                  mvp:
+                    type: array
+                    description: MVP features of the project.
+                    items:
+                      type: string
+                      example: AI task prioritization
+                  stretch:
+                    type: array
+                    description: Stretch features of the project.
+                    items:
+                      type: string
+                      example: Team collaboration
+                  timeline:
+                    type: object
+                    properties:
+                      frontend:
+                        type: array
+                        description: List of frontend tasks.
+                        items:
+                          type: string
+                          example: Create initial wireframes and mockups in Figma
+                      backend:
+                        type: array
+                        description: List of backend tasks.
+                        items:
+                          type: string
+                          example: Set up database schema in PostgreSQL
+                    description: Timeline for the project phases.
+                  team_lead_id:
+                    type: integer
+                    description: ID of the team lead for the project.
+                    example: 1
+                  github_repo_url:
+                    type: string
+                    description: URL of the GitHub repository created for the project.
+                    example: https://github.com/user/repo
+                  thumbnail:
+                    type: string
+                    description: URL of the uploaded thumbnail image.
+                    example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{id}:
     put:
-      summary: "Update an existing project"
       tags:
-        - "Projects"
-      consumes:
-        - "multipart/form-data"
+      - Projects
+      summary: Update an existing project
       parameters:
-        - in: path
-          name: id
-          required: true
+      - name: id
+        in: path
+        description: ID of the project to update
+        required: true
+        schema:
           type: integer
-          description: "ID of the project to update"
-        - in: formData
-          name: projectDataString
-          type: string
-          description: "String for project data JSON object."
-          schema:
-            type: object
-            example: {
-              "title": "AI-Powered Task Manager",
-              "description": "A task manager that uses AI to suggest priorities.",
-              "short_description": "AI helps prioritize tasks.",
-              "type": "Web App",
-              "mvp": ["AI task prioritization"],
-              "stretch": ["Team collaboration"],
-              "timeline": {
-                "frontend": ["Create initial wireframes and mockups in Figma"],
-                "backend": ["Set up database schema in PostgreSQL"]
-              },
-              "team_lead_id": 1
-            }
-        - in: formData
-          name: thumbnail
-          type: file
-          required: false
-          description: "Thumbnail image file for the project."
-      responses:
-        200:
-          description: "Project updated successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the updated project."
-                example: 1
-              title:
-                type: string
-                description: "Title of the project."
-                example: "AI-Powered Task Manager"
-              description:
-                type: string
-                description: "Detailed description of the project."
-                example: "A task manager that uses AI to suggest priorities."
-              short_description:
-                type: string
-                description: "Short description of the project."
-                example: "AI helps prioritize tasks."
-              type:
-                type: string
-                description: "Type of the project."
-                example: "Web App"
-              mvp:
-                type: array
-                description: "MVP features of the project."
-                items:
-                  type: string
-                  example: "AI task prioritization"
-              stretch:
-                type: array
-                description: "Stretch features of the project."
-                items:
-                  type: string
-                  example: "Team collaboration"
-              timeline:
-                type: object
-                description: "Timeline for the project phases."
-                properties:
-                  frontend:
-                    type: array
-                    description: "List of frontend tasks."
-                    items:
-                      type: string
-                      example: "Create initial wireframes and mockups in Figma"
-                  backend:
-                    type: array
-                    description: "List of backend tasks."
-                    items:
-                      type: string
-                      example: "Set up database schema in PostgreSQL"
-              team_lead_id:
-                type: integer
-                description: "ID of the team lead for the project."
-                example: 1
-              github_repo_url:
-                type: string
-                description: "URL of the GitHub repository created for the project."
-                example: "https://github.com/user/repo"
-              thumbnail:
-                type: string
-                description: "URL of the uploaded thumbnail image."
-                example: "https://s3.amazonaws.com/bucket-name/thumbnail.png"
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-    delete:
-      summary: "Delete an existing project"
-      tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: id
-          required: true
-          type: integer
-          description: "ID of the project to delete"
-      responses:
-        200:
-          description: "Project deleted successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the deleted project."
-                example: 1
-              title:
-                type: string
-                description: "Title of the project."
-                example: "AI-Powered Task Manager"
-              description:
-                type: string
-                description: "Detailed description of the project."
-                example: "A task manager that uses AI to suggest priorities."
-              short_description:
-                type: string
-                description: "Short description of the project."
-                example: "AI helps prioritize tasks."
-              type:
-                type: string
-                description: "Type of the project."
-                example: "Web App"
-              mvp:
-                type: array
-                description: "MVP features of the project."
-                items:
-                  type: string
-                  example: "AI task prioritization"
-              stretch:
-                type: array
-                description: "Stretch features of the project."
-                items:
-                  type: string
-                  example: "Team collaboration"
-              timeline:
-                type: object
-                description: "Timeline for the project phases."
-                properties:
-                  frontend:
-                    type: array
-                    description: "List of frontend tasks."
-                    items:
-                      type: string
-                      example: "Create initial wireframes and mockups in Figma"
-                  backend:
-                    type: array
-                    description: "List of backend tasks."
-                    items:
-                      type: string
-                      example: "Set up database schema in PostgreSQL"
-              team_lead_id:
-                type: integer
-                description: "ID of the team lead for the project."
-                example: 1
-              github_repo_url:
-                type: string
-                description: "URL of the GitHub repository created for the project."
-                example: "https://github.com/user/repo"
-              thumbnail:
-                type: string
-                description: "URL of the uploaded thumbnail image."
-                example: "https://s3.amazonaws.com/bucket-name/thumbnail.png"
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-  /generateProject:
-    post:
-      summary: "Generate a project from an AI prompt"
-      tags:
-        - "Projects"
-      consumes:
-        - "application/json"
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              prompt:
-                type: string
-                description: "AI prompt to generate the project."
-                default: "Create a project for an AI-powered task manager."
-      responses:
-        201:
-          description: "Project generated successfully."
-          schema:
-            type: object
-            properties:
-              title:
-                type: string
-                description: "Title of the project."
-                example: "AI-Powered Task Manager"
-              short_description:
-                type: string
-                description: "Short description of the project."
-                example: "AI helps prioritize tasks."
-              description:
-                type: string
-                description: "Detailed description of the project."
-                example: "A task manager that uses AI to suggest priorities."
-              type:
-                type: string
-                description: "Type of the project."
-                example: "Web App"
-              topics:
-                type: array
-                description: "List of topics for the project."
-                items:
-                  type: string
-                  example: "Social Media"
-              skills:
-                type: array
-                description: "List of skills for the project."
-                items:
-                  type: string
-                  example: "JavaScript"
-              mvp:
-                type: array
-                description: "MVP features of the project."
-                items:
-                  type: string
-                  example: "AI task prioritization"
-              stretch:
-                type: array
-                description: "Stretch features of the project."
-                items:
-                  type: string
-                  example: "Team collaboration"
-              timeline:
-                type: object
-                description: "Timeline for the project phases."
-                properties:
-                  frontend:
-                    type: array
-                    description: "List of frontend tasks."
-                    items:
-                      type: string
-                      example: "Create initial wireframes and mockups in Figma"
-                  backend:
-                    type: array
-                    description: "List of backend tasks."
-                    items:
-                      type: string
-                      example: "Set up database schema in PostgreSQL"
-              thumbnail:
-                type: string
-                description: "URL of the uploaded thumbnail image."
-                example: "https://s3.amazonaws.com/bucket-name/thumbnail.png"
-        500:
-          description: "Server error."
-  /{id}/generateResume:
-    get:
-      summary: "Generate resumes for everyone on a project"
-      tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: id
-          required: true
-          type: integer
-          description: "ID of the project"
-      responses:
-        200:
-          description: "Resumes generated successfully."
-          schema:
-            type: array
-            items:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
               type: object
               properties:
-                name:
+                projectDataString:
                   type: string
-                  example: "Aliaksandr Kalenik"
-                project:
+                  description: >
+                    String for project data JSON object. Example: 
+                      {
+                        "title": "AI-Powered Task Manager",
+                        "description": "A task manager that uses AI to suggest priorities.",
+                        "short_description": "AI helps prioritize tasks.",
+                        "type": "Web App",
+                        "mvp": ["AI task prioritization"],
+                        "stretch": ["Team collaboration"],
+                        "timeline": {
+                          "frontend": ["Create initial wireframes and mockups in Figma"],
+                          "backend": ["Set up database schema in PostgreSQL"]
+                        },
+                        "team_lead_id": 1
+                      }
+                thumbnail:
                   type: string
-                  example: "ladybird"
-                tech_stack:
-                  type: array
-                  items:
+                  description: Thumbnail image file for the project.
+                  format: binary
+      responses:
+        "200":
+          description: Project updated successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the updated project.
+                    example: 1
+                  title:
                     type: string
-                  example: ["C++", "LibWeb"]
-                bullet_points:
-                  type: array
-                  items:
+                    description: Title of the project.
+                    example: AI-Powered Task Manager
+                  description:
                     type: string
-                  example:
-                    - "Enhanced grid item sizing logic for replaced boxes in LibWeb's layout engine, ensuring accurate rendering according to specifications."
-                    - "Improved handling of 'width: auto' for replaced elements, adhering to width calculation rules for block-level replaced elements."
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-  /{projectId}/skills/{skillId}:
-    post:
-      summary: "Add a skill to a project"
-      tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-          description: "ID of the project"
-        - in: path
-          name: skillId
-          required: true
-          type: integer
-          description: "ID of the skill"
-      responses:
-        201:
-          description: "Skill added to project successfully."
-          schema:
-            type: object
-            properties:
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              skillId:
-                type: integer
-                description: "ID of the skill."
-                example: 1
-        404:
-          description: "Project or skill not found."
-        500:
-          description: "Server error."
+                    description: Detailed description of the project.
+                    example: A task manager that uses AI to suggest priorities.
+                  short_description:
+                    type: string
+                    description: Short description of the project.
+                    example: AI helps prioritize tasks.
+                  type:
+                    type: string
+                    description: Type of the project.
+                    example: Web App
+                  mvp:
+                    type: array
+                    description: MVP features of the project.
+                    items:
+                      type: string
+                      example: AI task prioritization
+                  stretch:
+                    type: array
+                    description: Stretch features of the project.
+                    items:
+                      type: string
+                      example: Team collaboration
+                  timeline:
+                    type: object
+                    properties:
+                      frontend:
+                        type: array
+                        description: List of frontend tasks.
+                        items:
+                          type: string
+                          example: Create initial wireframes and mockups in Figma
+                      backend:
+                        type: array
+                        description: List of backend tasks.
+                        items:
+                          type: string
+                          example: Set up database schema in PostgreSQL
+                    description: Timeline for the project phases.
+                  team_lead_id:
+                    type: integer
+                    description: ID of the team lead for the project.
+                    example: 1
+                  github_repo_url:
+                    type: string
+                    description: URL of the GitHub repository created for the project.
+                    example: https://github.com/user/repo
+                  thumbnail:
+                    type: string
+                    description: URL of the uploaded thumbnail image.
+                    example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
     delete:
-      summary: "Delete a skill from a project"
       tags:
-        - "Projects"
+      - Projects
+      summary: Delete an existing project
       parameters:
-        - in: path
-          name: projectId
-          required: true
+      - name: id
+        in: path
+        description: ID of the project to delete
+        required: true
+        schema:
           type: integer
-          description: "ID of the project"
-        - in: path
-          name: skillId
-          required: true
-          type: integer
-          description: "ID of the skill"
       responses:
-        200:
-          description: "Skill deleted from project successfully."
-          schema:
-            type: object
-            properties:
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              skillId:
-                type: integer
-                description: "ID of the skill."
-                example: 1
-        404:
-          description: "Project or skill not found."
-        500:
-          description: "Server error."
-  /{projectId}/skills:
-    get:
-      summary: "Get skills for a project"
+        "200":
+          description: Project deleted successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the deleted project.
+                    example: 1
+                  title:
+                    type: string
+                    description: Title of the project.
+                    example: AI-Powered Task Manager
+                  description:
+                    type: string
+                    description: Detailed description of the project.
+                    example: A task manager that uses AI to suggest priorities.
+                  short_description:
+                    type: string
+                    description: Short description of the project.
+                    example: AI helps prioritize tasks.
+                  type:
+                    type: string
+                    description: Type of the project.
+                    example: Web App
+                  mvp:
+                    type: array
+                    description: MVP features of the project.
+                    items:
+                      type: string
+                      example: AI task prioritization
+                  stretch:
+                    type: array
+                    description: Stretch features of the project.
+                    items:
+                      type: string
+                      example: Team collaboration
+                  timeline:
+                    type: object
+                    properties:
+                      frontend:
+                        type: array
+                        description: List of frontend tasks.
+                        items:
+                          type: string
+                          example: Create initial wireframes and mockups in Figma
+                      backend:
+                        type: array
+                        description: List of backend tasks.
+                        items:
+                          type: string
+                          example: Set up database schema in PostgreSQL
+                    description: Timeline for the project phases.
+                  team_lead_id:
+                    type: integer
+                    description: ID of the team lead for the project.
+                    example: 1
+                  github_repo_url:
+                    type: string
+                    description: URL of the GitHub repository created for the project.
+                    example: https://github.com/user/repo
+                  thumbnail:
+                    type: string
+                    description: URL of the uploaded thumbnail image.
+                    example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/generateProject:
+    post:
       tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-          description: "ID of the project"
-      responses:
-        200:
-          description: "List of skills for the project."
-          schema:
-            type: array
-            items:
+      - Projects
+      summary: Generate a project from an AI prompt
+      requestBody:
+        content:
+          application/json:
+            schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  description: "ID of the skill."
-                  example: 1
-                name:
+                prompt:
                   type: string
-                  description: "Name of the skill."
-                  example: "JavaScript"
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-  /{projectId}/topics/{topicId}:
-    post:
-      summary: "Add a topic to a project"
-      tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-          description: "ID of the project"
-        - in: path
-          name: topicId
-          required: true
-          type: integer
-          description: "ID of the topic"
+                  description: AI prompt to generate the project.
+                  default: Create a project for an AI-powered task manager.
+        required: true
       responses:
-        201:
-          description: "Topic added to project successfully."
-          schema:
-            type: object
-            properties:
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              topicId:
-                type: integer
-                description: "ID of the topic."
-                example: 1
-        404:
-          description: "Project or topic not found."
-        500:
-          description: "Server error."
+        "201":
+          description: Project generated successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: Title of the project.
+                    example: AI-Powered Task Manager
+                  short_description:
+                    type: string
+                    description: Short description of the project.
+                    example: AI helps prioritize tasks.
+                  description:
+                    type: string
+                    description: Detailed description of the project.
+                    example: A task manager that uses AI to suggest priorities.
+                  type:
+                    type: string
+                    description: Type of the project.
+                    example: Web App
+                  topics:
+                    type: array
+                    description: List of topics for the project.
+                    items:
+                      type: string
+                      example: Social Media
+                  skills:
+                    type: array
+                    description: List of skills for the project.
+                    items:
+                      type: string
+                      example: JavaScript
+                  mvp:
+                    type: array
+                    description: MVP features of the project.
+                    items:
+                      type: string
+                      example: AI task prioritization
+                  stretch:
+                    type: array
+                    description: Stretch features of the project.
+                    items:
+                      type: string
+                      example: Team collaboration
+                  timeline:
+                    type: object
+                    properties:
+                      frontend:
+                        type: array
+                        description: List of frontend tasks.
+                        items:
+                          type: string
+                          example: Create initial wireframes and mockups in Figma
+                      backend:
+                        type: array
+                        description: List of backend tasks.
+                        items:
+                          type: string
+                          example: Set up database schema in PostgreSQL
+                    description: Timeline for the project phases.
+                  thumbnail:
+                    type: string
+                    description: URL of the uploaded thumbnail image.
+                    example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+        "500":
+          description: Server error.
+          content: {}
+      x-codegen-request-body-name: body
+  /projects/{id}/generateResume:
+    get:
+      tags:
+      - Projects
+      summary: Generate resumes for everyone on a project
+      parameters:
+      - name: id
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Resumes generated successfully.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Aliaksandr Kalenik
+                    project:
+                      type: string
+                      example: ladybird
+                    tech_stack:
+                      type: array
+                      example:
+                      - C++
+                      - LibWeb
+                      items:
+                        type: string
+                    bullet_points:
+                      type: array
+                      example:
+                      - "Enhanced grid item sizing logic for replaced boxes in LibWeb's\
+                        \ layout engine, ensuring accurate rendering according to\
+                        \ specifications."
+                      - "Improved handling of 'width: auto' for replaced elements,\
+                        \ adhering to width calculation rules for block-level replaced\
+                        \ elements."
+                      items:
+                        type: string
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/skills/{skillId}:
+    post:
+      tags:
+      - Projects
+      summary: Add a skill to a project
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: skillId
+        in: path
+        description: ID of the skill
+        required: true
+        schema:
+          type: integer
+      responses:
+        "201":
+          description: Skill added to project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  skillId:
+                    type: integer
+                    description: ID of the skill.
+                    example: 1
+        "404":
+          description: Project or skill not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
     delete:
-      summary: "Delete a topic from a project"
       tags:
-        - "Projects"
+      - Projects
+      summary: Delete a skill from a project
       parameters:
-        - in: path
-          name: projectId
-          required: true
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
           type: integer
-          description: "ID of the project"
-        - in: path
-          name: topicId
-          required: true
+      - name: skillId
+        in: path
+        description: ID of the skill
+        required: true
+        schema:
           type: integer
-          description: "ID of the topic"
       responses:
-        200:
-          description: "Topic deleted from project successfully."
-          schema:
-            type: object
-            properties:
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              topicId:
-                type: integer
-                description: "ID of the topic."
-                example: 1
-        404:
-          description: "Project or topic not found."
-        500:
-          description: "Server error."
-  /{projectId}/topics:
+        "200":
+          description: Skill deleted from project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  skillId:
+                    type: integer
+                    description: ID of the skill.
+                    example: 1
+        "404":
+          description: Project or skill not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/skills:
     get:
-      summary: "Get topics for a project"
       tags:
-        - "Projects"
+      - Projects
+      summary: Get skills for a project
       parameters:
-        - in: path
-          name: projectId
-          required: true
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
           type: integer
-          description: "ID of the project"
       responses:
-        200:
-          description: "List of topics for the project."
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: "ID of the topic."
-                  example: 1
-                name:
-                  type: string
-                  description: "Name of the topic."
-                  example: "AI"
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-  /{projectId}/teamPreference:
+        "200":
+          description: List of skills for the project.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the skill.
+                      example: 1
+                    name:
+                      type: string
+                      description: Name of the skill.
+                      example: JavaScript
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/topics/{topicId}:
     post:
-      summary: "Add a team preference to a project"
       tags:
-        - "Projects"
+      - Projects
+      summary: Add a topic to a project
       parameters:
-        - in: path
-          name: projectId
-          required: true
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
           type: integer
-          description: "ID of the project"
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-              role_preference_id:
-                type: integer
-                description: "ID of the role preference."
-                example: 3
-              xp:
-                type: integer
-                description: "Experience level preference."
-                example: 50
+      - name: topicId
+        in: path
+        description: ID of the topic
+        required: true
+        schema:
+          type: integer
       responses:
-        201:
-          description: "Team preference added to project successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the team preference."
-                example: 1
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              role_preference_id:
-                type: integer
-                description: "ID of the role preference."
-                example: 3
-              xp:
-                type: integer
-                description: "Experience level preference."
-                example: 50
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
+        "201":
+          description: Topic added to project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  topicId:
+                    type: integer
+                    description: ID of the topic.
+                    example: 1
+        "404":
+          description: Project or topic not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+    delete:
+      tags:
+      - Projects
+      summary: Delete a topic from a project
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: topicId
+        in: path
+        description: ID of the topic
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Topic deleted from project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  topicId:
+                    type: integer
+                    description: ID of the topic.
+                    example: 1
+        "404":
+          description: Project or topic not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/topics:
     get:
-      summary: "Get team preferences for a project"
       tags:
-        - "Projects"
+      - Projects
+      summary: Get topics for a project
       parameters:
-        - in: path
-          name: projectId
-          required: true
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
           type: integer
-          description: "ID of the project"
       responses:
-        200:
-          description: "List of team preferences for the project."
-          schema:
-            type: array
-            items:
+        "200":
+          description: List of topics for the project.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the topic.
+                      example: 1
+                    name:
+                      type: string
+                      description: Name of the topic.
+                      example: AI
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/teamPreference:
+    get:
+      tags:
+      - Projects
+      summary: Get team preferences for a project
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of team preferences for the project.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the team preference.
+                      example: 1
+                    projectId:
+                      type: integer
+                      description: ID of the project.
+                      example: 1
+                    role_preference_id:
+                      type: integer
+                      description: ID of the role preference.
+                      example: 3
+                    xp:
+                      type: integer
+                      description: Experience level preference.
+                      example: 50
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+    post:
+      tags:
+      - Projects
+      summary: Add a team preference to a project
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          'application/json':
+            schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  description: "ID of the team preference."
-                  example: 1
-                projectId:
-                  type: integer
-                  description: "ID of the project."
-                  example: 1
                 role_preference_id:
                   type: integer
-                  description: "ID of the role preference."
+                  description: ID of the role preference.
                   example: 3
                 xp:
                   type: integer
-                  description: "Experience level preference."
+                  description: Experience level preference.
                   example: 50
-        404:
-          description: "Project not found."
-        500:
-          description: "Server error."
-  /{projectId}/teamPreference/{preferenceId}:
-    delete:
-      summary: "Delete a team preference from a project"
-      tags:
-        - "Projects"
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          type: integer
-          description: "ID of the project"
-        - in: path
-          name: preferenceId
-          required: true
-          type: integer
-          description: "ID of the team preference"
+        required: true
       responses:
-        200:
-          description: "Team preference deleted from project successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the team preference."
-                example: 1
-              projectId:
-                type: integer
-                description: "ID of the project."
-                example: 1
-              role_preference_id:
-                type: integer
-                description: "ID of the role preference."
-                example: 3
-              xp:
-                type: integer
-                description: "Experience level preference."
-                example: 50
-        404:
-          description: "Project or team preference not found."
-        500:
-          description: "Server error."
+        "201":
+          description: Team preference added to project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the team preference.
+                    example: 1
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  role_preference_id:
+                    type: integer
+                    description: ID of the role preference.
+                    example: 3
+                  xp:
+                    type: integer
+                    description: Experience level preference.
+                    example: 50
+        "404":
+          description: Project not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+      x-codegen-request-body-name: body
+  /projects/{projectId}/teamPreference/{preferenceId}:
+    delete:
+      tags:
+      - Projects
+      summary: Delete a team preference from a project
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      - name: preferenceId
+        in: path
+        description: ID of the team preference
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Team preference deleted from project successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the team preference.
+                    example: 1
+                  projectId:
+                    type: integer
+                    description: ID of the project.
+                    example: 1
+                  role_preference_id:
+                    type: integer
+                    description: ID of the role preference.
+                    example: 3
+                  xp:
+                    type: integer
+                    description: Experience level preference.
+                    example: 50
+        "404":
+          description: Project or team preference not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
   /roles:
     get:
-      summary: "Retrieve a list of all roles"
       tags:
-        - "Roles"
+      - Roles
+      summary: Retrieve a list of all roles
       responses:
-        200:
-          description: "A list of all roles."
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: "ID of the role."
-                  example: 1
-                role:
-                  type: string
-                  description: "Name of the role."
-                  example: "Frontend Developer"
-        500:
-          description: "Server error."
+        "200":
+          description: A list of all roles.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the role.
+                      example: 1
+                    role:
+                      type: string
+                      description: Name of the role.
+                      example: Frontend Developer
+        "500":
+          description: Server error.
+          content: {}
   /roles/{id}:
     get:
-      summary: "Retrieve a role by ID"
       tags:
-        - "Roles"
+      - Roles
+      summary: Retrieve a role by ID
       parameters:
-        - in: path
-          name: id
-          required: true
+      - name: id
+        in: path
+        description: ID of the role to retrieve
+        required: true
+        schema:
           type: integer
-          description: "ID of the role to retrieve"
       responses:
-        200:
-          description: "Role retrieved successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the role."
-                example: 1
-              role:
-                type: string
-                description: "Name of the role."
-                example: "Frontend Developer"
-        404:
-          description: "Role not found."
-        500:
-          description: "Server error."
+        "200":
+          description: Role retrieved successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the role.
+                    example: 1
+                  role:
+                    type: string
+                    description: Name of the role.
+                    example: Frontend Developer
+        "404":
+          description: Role not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
   /skills:
     get:
-      summary: "Retrieve a list of all skills"
       tags:
-        - "Skills"
+      - Skills
+      summary: Retrieve a list of all skills
       responses:
-        200:
-          description: "A list of all skills."
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: "ID of the skill."
-                  example: 1
-                skill:
-                  type: string
-                  description: "Name of the skill."
-                  example: "JavaScript"
-        500:
-          description: "Server error."
+        "200":
+          description: A list of all skills.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the skill.
+                      example: 1
+                    skill:
+                      type: string
+                      description: Name of the skill.
+                      example: JavaScript
+        "500":
+          description: Server error.
+          content: {}
   /skills/{id}:
     get:
-      summary: "Retrieve a skill by ID"
       tags:
-        - "Skills"
+      - Skills
+      summary: Retrieve a skill by ID
       parameters:
-        - in: path
-          name: id
-          required: true
+      - name: id
+        in: path
+        description: ID of the skill to retrieve
+        required: true
+        schema:
           type: integer
-          description: "ID of the skill to retrieve"
       responses:
-        200:
-          description: "Skill retrieved successfully."
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: "ID of the skill."
-                example: 1
-              skill:
-                type: string
-                description: "Name of the skill."
-                example: "JavaScript"
-        404:
-          description: "Skill not found."
-        500:
-          description: "Server error."
+        "200":
+          description: Skill retrieved successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the skill.
+                    example: 1
+                  skill:
+                    type: string
+                    description: Name of the skill.
+                    example: JavaScript
+        "404":
+          description: Skill not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
   /topics:
     get:
-      summary: "Retrieve a list of all topics"
       tags:
-        - "Topics"
+      - Topics
+      summary: Retrieve a list of all topics
       responses:
-        200:
-          description: "A list of all topics."
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: "ID of the topic."
-                  example: 1
-                topic:
-                  type: string
-                  description: "Name of the topic."
-                  example: "AI"
-        500:
-          description: "Server error."
+        "200":
+          description: A list of all topics.
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the topic.
+                      example: 1
+                    topic:
+                      type: string
+                      description: Name of the topic.
+                      example: AI
+        "500":
+          description: Server error.
+          content: {}
   /topics/{id}:
     get:
-      summary: "Retrieve a topic by ID"
       tags:
-        - "Topics"
+      - Topics
+      summary: Retrieve a topic by ID
       parameters:
-        - in: path
-          name: id
-          required: true
+      - name: id
+        in: path
+        description: ID of the topic to retrieve
+        required: true
+        schema:
           type: integer
-          description: "ID of the topic to retrieve"
       responses:
-        200:
-          description: "Topic retrieved successfully."
+        "200":
+          description: Topic retrieved successfully.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the topic.
+                    example: 1
+                  topic:
+                    type: string
+                    description: Name of the topic.
+                    example: AI
+        "404":
+          description: Topic not found.
+  # User Routes (REST API)
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve a list of all users from the `users` table.
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error.
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by ID
+      description: Retrieve a user by their ID from the `users` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
           schema:
-            type: object
-            properties:
-              id:
+            type: integer
+      responses:
+        '200':
+          description: A user object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+
+    put:
+      tags:
+        - Users
+      summary: Update a user
+      description: Update a user's information by their ID in the `users` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Updated user object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      description: Delete a user by their ID from the `users` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted successfully.
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/skills:
+    get:
+      tags:
+        - Users
+      summary: Get skills for a user
+      description: Retrieve a list of skills associated with a user from the `skill` table via the `user_skill` join table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of skills.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/skills/{skillID}:
+    post:
+      tags:
+        - Users
+      summary: Add a skill to a user
+      description: Add a skill to a user's profile in the `user_skill` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: skillID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Skill added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a skill from a user
+      description: Remove a skill from a user's profile in the `user_skill` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: skillID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Skill removed successfully.
+        '404':
+          description: Skill or user not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/topics:
+    get:
+      tags:
+        - Users
+      summary: Get topics for a user
+      description: Retrieve a list of topics associated with a user from the `topic` table via the `user_topic` join table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of topics.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/topics/{topicID}:
+    post:
+      tags:
+        - Users
+      summary: Add a topic to a user
+      description: Add a topic to a user's profile in the `user_topic` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: topicID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Topic added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a topic from a user
+      description: Remove a topic from a user's profile in the `user_topic` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: topicID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Topic removed successfully.
+        '404':
+          description: Topic or user not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/projects:
+    get:
+      tags:
+        - Users
+      summary: Get user-project associations
+      description: Retrieve a list of project associations for a user from the `user_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of user-project associations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProject'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/projects/{projectID}/{roleID}:
+    post:
+      tags:
+        - Users
+      summary: Add a project to a user
+      description: Add a project to a user's profile in the `user_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Project added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProject'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/projects/{projectId}:
+    delete:
+      tags:
+        - Users
+      summary: Remove a project from a user
+      description: Remove a project from a user's profile in the `user_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Project removed successfully.
+        '404':
+          description: Project or user not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/liked-projects:
+    get:
+      tags:
+        - Users
+      summary: Get liked projects for a user
+      description: Retrieve a list of projects liked by a user from the `user_likes_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of liked projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserLikesProject'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/liked-projects/{projectID}:
+    post:
+      tags:
+        - Users
+      summary: Add a liked project to a user
+      description: Add a project to a user's liked projects in the `user_likes_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Liked project added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLikesProject'
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a liked project from a user
+      description: Remove a project from a user's liked projects in the `user_likes_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Liked project removed successfully.
+        '404':
+          description: Project or user not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/bookmarked-projects:
+    get:
+      tags:
+        - Users
+      summary: Get bookmarked projects for a user
+      description: Retrieve a list of projects bookmarked by a user from the `user_bookmarks_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of bookmarked projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserBookmarksProject'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/bookmarked-projects/{projectID}:
+    post:
+      tags:
+        - Users
+      summary: Add a bookmarked project to a user
+      description: Add a project to a user's bookmarked projects in the `user_bookmarks_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Bookmarked project added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBookmarksProject'
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a bookmarked project from a user
+      description: Remove a project from a user's bookmarked projects in the `user_bookmarks_project` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Bookmarked project removed successfully.
+        '404':
+          description: Project or user not found.
+        '500':
+          description: Internal server error.
+
+  /users/{id}/join-requests:
+    get:
+      tags:
+        - Users
+      summary: Get join requests for a user
+      description: Retrieve a list of project join requests made by a user from the `user_project_join_request` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of join requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProjectJoinRequest'
+        '500':
+          description: Internal server error.
+
+  /users/{id}/join-requests/{projectID}:
+    post:
+      tags:
+        - Users
+      summary: Add a join request for a user
+      description: Add a project join request for a user in the `user_project_join_request` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Join request added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProjectJoinRequest'
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a join request for a user
+      description: Remove a project join request for a user in the `user_project_join_request` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: projectID
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Join request removed successfully.
+        '404':
+          description: Join request or user not found.
+        '500':
+          description: Internal server error.
+
+  # Chat Routes (Socket.IO Events)
+  /socket.io/loadProjects:
+    post:
+      tags:
+        - Chat
+      summary: Load user-project associations
+      description: Loads all project associations for a user from the `user_project` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UID:
+                  type: integer
+                  description: The user ID for whom to load project associations.
+      responses:
+        '200':
+          description: User-project associations loaded successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProject'
+        '500':
+          description: Internal server error.
+
+  /socket.io/getUID:
+    post:
+      tags:
+        - Chat
+      summary: Get user ID by username
+      description: Retrieves the user ID based on the username from the `users` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username to look up.
+      responses:
+        '200':
+          description: User ID retrieved successfully.
+          content:
+            application/json:
+              schema:
                 type: integer
-                description: "ID of the topic."
-                example: 1
-              topic:
+        '500':
+          description: Internal server error.
+
+  /socket.io/getUsername:
+    post:
+      tags:
+        - Chat
+      summary: Get username by user ID
+      description: Retrieves the username based on the user ID from the `users` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UID:
+                  type: integer
+                  description: The user ID to look up.
+      responses:
+        '200':
+          description: Username retrieved successfully.
+          content:
+            application/json:
+              schema:
                 type: string
-                description: "Name of the topic."
-                example: "AI"
-        404:
-          description: "Topic not found."
-        500:
-          description: "Server error."
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+        '500':
+          description: Internal server error.
+
+  /socket.io/getPID:
+    post:
+      tags:
+        - Chat
+      summary: Get project ID by project name
+      description: Retrieves the project ID based on the project name from the `project` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectName:
+                  type: string
+                  description: The project name to look up.
+      responses:
+        '200':
+          description: Project ID retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Internal server error.
+
+  /socket.io/getPName:
+    post:
+      tags:
+        - Chat
+      summary: Get project name by project ID
+      description: Retrieves the project name based on the project ID from the `project` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                PID:
+                  type: integer
+                  description: The project ID to look up.
+      responses:
+        '200':
+          description: Project name retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Internal server error.
+
+  /socket.io/joinRoom:
+    post:
+      tags:
+        - Chat
+      summary: Join a project room
+      description: Joins a user to a project room and loads past messages from the `projects_chat` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user joining the room.
+                username:
+                  type: string
+                  description: The username of the user joining the room.
+                project_id:
+                  type: integer
+                  description: The ID of the project room to join.
+      responses:
+        '200':
+          description: Successfully joined the room.
+        '500':
+          description: Internal server error.
+
+  /socket.io/joinDMRoom:
+    post:
+      tags:
+        - Chat
+      summary: Join a direct message (DM) room
+      description: Joins a user to a direct message (DM) room and loads past messages from the `dm_chat` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user joining the DM room.
+                username:
+                  type: string
+                  description: The username of the user joining the DM room.
+                other_id:
+                  type: integer
+                  description: The ID of the other user in the DM.
+                roomName:
+                  type: string
+                  description: The name of the DM room.
+      responses:
+        '200':
+          description: Successfully joined the DM room.
+        '500':
+          description: Internal server error.
+
+  /socket.io/chatMessage:
+    post:
+      tags:
+        - Chat
+      summary: Send a chat message
+      description: Sends a chat message to a project or DM room. This saves the message to either the `projects_chat` table (for project messages) or the `dm_chat` table (for DMs).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UID:
+                  type: integer
+                  description: The ID of the user sending the message.
+                msg:
+                  type: string
+                  description: The message content.
+                PID:
+                  type: integer
+                  description: The ID of the project or DM room.
+                isDM:
+                  type: boolean
+                  description: Whether the message is for a DM room.
+      responses:
+        '200':
+          description: Message sent successfully.
+        '500':
+          description: Internal server error.
+
+  /socket.io/getDMs:
+    post:
+      tags:
+        - Chat
+      summary: Get received DMs
+      description: Retrieves all direct messages (DMs) received by a user from the `dm_chat` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user whose DMs are being retrieved.
+      responses:
+        '200':
+          description: DMs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DM'
+        '500':
+          description: Internal server error.
+
+  /socket.io/sentDMs:
+    post:
+      tags:
+        - Chat
+      summary: Get sent DMs
+      description: Retrieves all direct messages (DMs) sent by a user from the `dm_chat` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user whose sent DMs are being retrieved.
+      responses:
+        '200':
+          description: Sent DMs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DM'
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: string
+          format: date-time
+        image:
+          type: string
+        xp:
+          type: integer
+        bio:
+          type: string
+        role_preference_id:
+          type: integer
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: string
+          format: date-time
+        image:
+          type: string
+        xp:
+          type: integer
+        bio:
+          type: string
+        role_preference_id:
+          type: integer
+
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        skill:
+          type: string
+
+    Topic:
+      type: object
+      properties:
+        id:
+          type: integer
+        topic:
+          type: string
+
+    UserProject:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+        role_id:
+          type: integer
+
+    UserLikesProject:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+
+    UserBookmarksProject:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+
+    UserProjectJoinRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+
+    DM:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender_id:
+          type: integer
+        receiver_id:
+          type: integer
+        message:
+          type: string
+        time:
+          type: string
+          format: date-time
