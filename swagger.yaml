@@ -79,6 +79,11 @@ paths:
                       type: integer
                       description: ID of the team lead for the project.
                       example: 1
+                    creation_date:
+                      type: string
+                      format: date-time
+                      description: Date when the project was created.
+                      example: 2025-3-30T12:00:00Z
                     github_repo_url:
                       type: string
                       description: URL of the GitHub repository for the project.
@@ -184,6 +189,11 @@ paths:
                     type: integer
                     description: ID of the team lead for the project.
                     example: 1
+                  creation_date:
+                    type: string
+                    format: date-time
+                    description: Date when the project was created.
+                    example: 2025-3-30T12:00:00Z                  
                   github_repo_url:
                     type: string
                     description: URL of the GitHub repository created for the project.
@@ -294,6 +304,11 @@ paths:
                     type: integer
                     description: ID of the team lead for the project.
                     example: 1
+                  creation_date:
+                    type: string
+                    format: date-time
+                    description: Date when the project was created.
+                    example: 2025-3-30T12:00:00Z                   
                   github_repo_url:
                     type: string
                     description: URL of the GitHub repository created for the project.
@@ -379,6 +394,11 @@ paths:
                     type: integer
                     description: ID of the team lead for the project.
                     example: 1
+                  creation_date:
+                    type: string
+                    format: date-time
+                    description: Date when the project was created.
+                    example: 2025-3-30T12:00:00Z 
                   github_repo_url:
                     type: string
                     description: URL of the GitHub repository created for the project.
@@ -464,6 +484,11 @@ paths:
                     type: integer
                     description: ID of the team lead for the project.
                     example: 1
+                  creation_date:
+                    type: string
+                    format: date-time
+                    description: Date when the project was created.
+                    example: 2025-3-30T12:00:00Z 
                   github_repo_url:
                     type: string
                     description: URL of the GitHub repository created for the project.
@@ -516,6 +541,8 @@ paths:
                       bio:
                         type: string
                       role_preference_id:
+                        type: integer
+                      role_id:
                         type: integer
         "500":
           description: Server error.
