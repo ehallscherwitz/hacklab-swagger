@@ -92,6 +92,10 @@ paths:
                       type: string
                       description: URL of the uploaded thumbnail image.
                       example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                    likes:
+                      type: integer
+                      description: Number of likes for the project.
+                      example: 100
         "500":
           description: Server error.
           content: {}
@@ -202,6 +206,10 @@ paths:
                     type: string
                     description: URL of the uploaded thumbnail image.
                     example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                  likes:
+                    type: integer
+                    description: Number of likes for the project.
+                    example: 100
         "500":
           description: Server error.
           content: {}
@@ -317,6 +325,10 @@ paths:
                     type: string
                     description: URL of the uploaded thumbnail image.
                     example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                  likes:
+                    type: integer
+                    description: Number of likes for the project.
+                    example: 100
         "404":
           description: Project not found.
           content: {}
@@ -407,6 +419,10 @@ paths:
                     type: string
                     description: URL of the uploaded thumbnail image.
                     example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                  likes:
+                    type: integer
+                    description: Number of likes for the project.
+                    example: 100
         "404":
           description: Project not found.
           content: {}
@@ -497,6 +513,10 @@ paths:
                     type: string
                     description: URL of the uploaded thumbnail image.
                     example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                  likes:
+                    type: integer
+                    description: Number of likes for the project.
+                    example: 100
         "404":
           description: Project not found.
           content: {}
