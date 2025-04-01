@@ -610,16 +610,16 @@ paths:
                     example: Web App
                   topics:
                     type: array
-                    description: List of topics for the project.
+                    description: List of topic ids for the project.
                     items:
-                      type: string
-                      example: Social Media
+                      type: integer
+                      example: 1
                   skills:
                     type: array
-                    description: List of skills for the project.
+                    description: List of skill ids for the project.
                     items:
-                      type: string
-                      example: JavaScript
+                      type: integer
+                      example: 1
                   mvp:
                     type: array
                     description: MVP features of the project.
