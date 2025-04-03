@@ -209,7 +209,11 @@ paths:
                   likes:
                     type: integer
                     description: Number of likes for the project.
-                    example: 100
+                    example: 0
+                  completed:
+                    type: boolean
+                    description: Indicates if the project is completed.
+                    example: false
         "500":
           description: Server error.
           content: {}
@@ -329,6 +333,10 @@ paths:
                     type: integer
                     description: Number of likes for the project.
                     example: 100
+                  completed:
+                    type: boolean
+                    description: Indicates if the project is completed.
+                    example: false
         "404":
           description: Project not found.
           content: {}
@@ -1083,6 +1091,105 @@ paths:
                     example: 50
         "404":
           description: Project or team preference not found.
+          content: {}
+        "500":
+          description: Server error.
+          content: {}
+  /projects/{projectId}/complete:
+    patch:
+      tags:
+      - Projects
+      summary: Set a project as complete
+      parameters:
+      - name: projectId
+        in: path
+        description: ID of the project
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Updated project
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the updated project.
+                    example: 1
+                  title:
+                    type: string
+                    description: Title of the project.
+                    example: AI-Powered Task Manager
+                  description:
+                    type: string
+                    description: Detailed description of the project.
+                    example: A task manager that uses AI to suggest priorities.
+                  short_description:
+                    type: string
+                    description: Short description of the project.
+                    example: AI helps prioritize tasks.
+                  type:
+                    type: string
+                    description: Type of the project.
+                    example: Web App
+                  mvp:
+                    type: array
+                    description: MVP features of the project.
+                    items:
+                      type: string
+                      example: AI task prioritization
+                  stretch:
+                    type: array
+                    description: Stretch features of the project.
+                    items:
+                      type: string
+                      example: Team collaboration
+                  timeline:
+                    type: object
+                    properties:
+                      frontend:
+                        type: array
+                        description: List of frontend tasks.
+                        items:
+                          type: string
+                          example: Create initial wireframes and mockups in Figma
+                      backend:
+                        type: array
+                        description: List of backend tasks.
+                        items:
+                          type: string
+                          example: Set up database schema in PostgreSQL
+                    description: Timeline for the project phases.
+                  team_lead_id:
+                    type: integer
+                    description: ID of the team lead for the project.
+                    example: 1
+                  creation_date:
+                    type: string
+                    format: date-time
+                    description: Date when the project was created.
+                    example: 2025-3-30T12:00:00Z                   
+                  github_repo_url:
+                    type: string
+                    description: URL of the GitHub repository created for the project.
+                    example: https://github.com/user/repo
+                  thumbnail:
+                    type: string
+                    description: URL of the uploaded thumbnail image.
+                    example: https://s3.amazonaws.com/bucket-name/thumbnail.png
+                  likes:
+                    type: integer
+                    description: Number of likes for the project.
+                    example: 100
+                  completed:
+                    type: boolean
+                    description: Indicates if the project is completed.
+                    example: true
+        "404":
+          description: Project not found.
           content: {}
         "500":
           description: Server error.
