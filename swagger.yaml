@@ -668,14 +668,39 @@ paths:
     get:
       tags:
       - Projects
-      summary: Generate resumes for everyone on a project
+      summary: Generate resume for a user given a project
       parameters:
       - name: id
         in: path
-        description: ID of the project
+        description: ID of the project, but currently doesn't do anything since we manually send the github repo so whatever you put here doesn't matter but you still have to put something
         required: true
         schema:
           type: integer
+      - name: linkedin
+        in: query
+        description: user's linkedin url
+        required: false
+        schema:
+          type: string
+      - name: github
+        in: query
+        description: github repo link for the project
+        required: false
+        schema:
+          type: string
+      - name: github_username
+        in: query
+        description: users github username (different than their github name)
+        required: false
+        schema:
+          type: string
+      - name: db_name
+        in: query
+        description: user's github name (what we store in the database under "name")
+        required: false
+        schema:
+          type: string
+
       responses:
         "200":
           description: Resumes generated successfully.
@@ -1535,6 +1560,85 @@ paths:
           description: Skill or user not found.
         '500':
           description: Internal server error.
+  /users/{id}/role:
+    get:
+      tags:
+        - Users
+      summary: Get role for a user
+      description: Retrieve a role for a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: the id and name of the role
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the role.
+                      example: 1
+                    role:
+                      type: string
+                      description: Name of the role.
+                      example: Frontend Developer
+        '500':
+          description: Internal server error.
+
+  /users/{id}/role/{roleId}:
+    post:
+      tags:
+        - Users
+      summary: Add a role to a user
+      description: Add a role to a user's profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Skill added successfully.
+        '500':
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Users
+      summary: Remove a role from a user
+      description: Remove a role from a user's profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Role removed successfully.
+        '404':
+          description: Role or user not found.
+        '500':
+          description: Internal server error.
 
   /users/{id}/topics:
     get:
@@ -1916,6 +2020,23 @@ paths:
           description: Join request or user not found.
         '500':
           description: Internal server error.
+
+  /users/{id}/resume:
+    
+    get:
+      tags:
+        - Users
+      summary: Get resume for a user
+      description: retrieve latex resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: the raw text of latex code for the resume
 
   # Chat Routes (Socket.IO Events)
   /socket.io/loadProjects:
