@@ -850,6 +850,10 @@ paths:
                       type: string
                       description: Name of the skill.
                       example: JavaScript
+                    icon_url:
+                      type: string
+                      description: URL of the skill icon.
+                      example: https://example.com/icon.png
         "404":
           description: Project not found.
           content: {}
@@ -1302,6 +1306,10 @@ paths:
                       type: string
                       description: Name of the skill.
                       example: JavaScript
+                    icon_url:
+                      type: string
+                      description: URL of the skill icon.
+                      example: https://example.com/icon.png
         "500":
           description: Server error.
           content: {}
@@ -1333,6 +1341,10 @@ paths:
                     type: string
                     description: Name of the skill.
                     example: JavaScript
+                  icon_url:
+                    type: string
+                    description: URL of the skill icon.
+                    example: https://example.com/icon.png
         "404":
           description: Skill not found.
           content: {}
@@ -2365,6 +2377,8 @@ components:
         id:
           type: integer
         skill:
+          type: string
+        icon_url:
           type: string
 
     Topic:
