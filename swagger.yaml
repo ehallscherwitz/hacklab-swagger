@@ -677,13 +677,13 @@ paths:
         schema:
           type: integer
       - name: github_username
-        in: query
+        in: body
         description: users github username (different than their github name)
         required: false
         schema:
           type: string
       - name: db_name
-        in: query
+        in: body
         description: user's github name (what we store in the database under "name")
         required: false
         schema:
