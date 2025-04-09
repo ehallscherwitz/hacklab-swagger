@@ -2339,6 +2339,10 @@ components:
           type: string
         role_preference_id:
           type: integer
+        generated_resume_latex:
+          type: string
+        linkedin_url:
+          type: string
 
     UserUpdate:
       type: object
@@ -2358,6 +2362,11 @@ components:
           type: string
         role_preference_id:
           type: integer
+        generated_resume_latex:
+          type: string
+        linkedin_url:
+          type: string
+        
 
     Skill:
       type: object
