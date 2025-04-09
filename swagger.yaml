@@ -665,29 +665,17 @@ paths:
           content: {}
       x-codegen-request-body-name: body
   /projects/{id}/generateResume:
-    get:
+    post:
       tags:
       - Projects
       summary: Generate resume for a user given a project
       parameters:
       - name: id
         in: path
-        description: ID of the project, but currently doesn't do anything since we manually send the github repo so whatever you put here doesn't matter but you still have to put something
+        description: ID of the project, used to get the github link
         required: true
         schema:
           type: integer
-      - name: linkedin
-        in: query
-        description: user's linkedin url
-        required: false
-        schema:
-          type: string
-      - name: github
-        in: query
-        description: github repo link for the project
-        required: false
-        schema:
-          type: string
       - name: github_username
         in: query
         description: users github username (different than their github name)
