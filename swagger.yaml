@@ -2317,6 +2317,35 @@ paths:
         '500':
           description: Internal server error.
 
+  /socket.io/getNotifications:
+    post:
+      tags:
+        - Notifications
+      summary: Get notifications for a user
+      description: Retrieves all notifications from the `notifications` table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: The ID of the user whose notifications are being retrieved
+      responses:
+        '200':
+          description: Notifications retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/notifications'
+        '500':
+          description: Internal server error.
+
+
 components:
   schemas:
     User:
@@ -2428,6 +2457,17 @@ components:
         sender_id:
           type: integer
         receiver_id:
+          type: integer
+        message:
+          type: string
+        time:
+          type: string
+          format: date-time
+
+    notifications:
+      type: object
+      properties:
+        user_id:
           type: integer
         message:
           type: string
