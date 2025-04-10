@@ -691,38 +691,12 @@ paths:
 
       responses:
         "200":
-          description: Resumes generated successfully.
+          description: Resume generated successfully. Will return plain text LaTex code for the resume.
           content:
-            'application/json':
+            text/plain:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      example: Aliaksandr Kalenik
-                    project:
-                      type: string
-                      example: ladybird
-                    tech_stack:
-                      type: array
-                      example:
-                      - C++
-                      - LibWeb
-                      items:
-                        type: string
-                    bullet_points:
-                      type: array
-                      example:
-                      - "Enhanced grid item sizing logic for replaced boxes in LibWeb's\
-                        \ layout engine, ensuring accurate rendering according to\
-                        \ specifications."
-                      - "Improved handling of 'width: auto' for replaced elements,\
-                        \ adhering to width calculation rules for block-level replaced\
-                        \ elements."
-                      items:
-                        type: string
+                type: string
+                
         "404":
           description: Project not found.
           content: {}
