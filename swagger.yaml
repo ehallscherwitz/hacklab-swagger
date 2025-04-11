@@ -2318,6 +2318,38 @@ paths:
                   $ref: '#/components/schemas/notifications'
         '500':
           description: Internal server error.
+  /socket.io/deleteNotification:
+    post:
+      tags:
+        - Notifications
+      summary: Delete a notification for a user
+      description: used to delete a notification after a user reads/clicks it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_id:
+                  type: integer
+                  description: The ID of the notification to delete
+      responses:
+        '200':
+          description: Notification deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Notification deleted successfully
+        '500':
+          description: Internal server error.
+  
+
+      
 
 
 components:
