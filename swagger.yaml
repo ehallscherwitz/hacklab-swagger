@@ -1146,6 +1146,29 @@ paths:
         "500":
           description: Server error.
           content: {}
+  /projects/{id}/join-requests:
+    get:
+      tags:
+        - Projects
+      summary: Get join requests for a project
+      description: Retrieve a list of project join requests made by a user from the `user_project_join_request` table.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of join requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProjectJoinRequest'
+        '500':
+          description: Internal server error.
   /roles:
     get:
       tags:
