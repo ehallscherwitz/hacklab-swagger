@@ -2507,3 +2507,5 @@ components:
         time:
           type: string
           format: date-time
+        type:
+          type: string
