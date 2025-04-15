@@ -2077,16 +2077,16 @@ paths:
             schema:
               type: integer
         requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                resume:
-                  type: string
-                  description: The LaTeX code for the resume, encoded as a URI-safe string.
-                  example: "QmVnaW4ge1xuICBcZG9jdW1lbnRjbGFzc3t..."
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resume:
+                    type: string
+                    description: The LaTeX code for the resume, encoded as a URI-safe string.
+                    example: "QmVnaW4ge1xuICBcZG9jdW1lbnRjbGFzc3t..."
         responses:
           '200':
             description: The pdf of the resume and the encoded latex
