@@ -1467,21 +1467,23 @@ paths:
         required: false
         schema:
           type: string
-
       responses:
-        "200":
-          description: Resume generated successfully. Will return plain text LaTex code for the resume.
-          content:
-            text/plain:
+        '200':
+          description: The pdf of the resume and the encoded latex
+          headers:
+            X-Latex-Code:
+              description: The encoded LaTeX code for the resume. URI Decode before use
               schema:
                 type: string
-                
-        "404":
-          description: Project not found.
-          content: {}
-        "500":
-          description: Server error.
-          content: {}
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
   /users/{id}/skills:
     get:
       tags:
@@ -2033,75 +2035,75 @@ paths:
       responses:
         '200':
           description: the raw text of latex code for the resume
-/recompile/{id}:
-    get:
-      tags:
-        - Recompile
-      summary: Recompile the latex that is saved in the database for a user by their id
-      description: Retrieve a user's resume by their ID from the `users` table.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: The pdf of the resume and the encoded latex
-          headers:
-            X-Latex-Code:
-              description: The encoded LaTeX code for the resume. URI Decode before use
-              schema:
-                type: string
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: User not found.
-        '500':
-          description: Internal server error.
+  /recompile/{id}:
+      get:
+        tags:
+          - Recompile
+        summary: Recompile the latex that is saved in the database for a user by their id
+        description: Retrieve a user's resume by their ID from the `users` table.
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: The pdf of the resume and the encoded latex
+            headers:
+              X-Latex-Code:
+                description: The encoded LaTeX code for the resume. URI Decode before use
+                schema:
+                  type: string
+            content:
+              application/pdf:
+                schema:
+                  type: string
+                  format: binary
+          '404':
+            description: User not found.
+          '500':
+            description: Internal server error.
 
-    put:
-      tags:
-        - Recompile
-      summary: Update a user's resume in the database and get the recompiled pdf
-      description: Update a user's resume information by their ID in the `users` table.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              resume:
-                type: string
-                description: The LaTeX code for the resume, encoded as a URI-safe string.
-                example: "QmVnaW4ge1xuICBcZG9jdW1lbnRjbGFzc3t..."
-      responses:
-        '200':
-          description: The pdf of the resume and the encoded latex
-          headers:
-            X-Latex-Code:
-              description: The encoded LaTeX code for the resume. URI Decode before use
-              schema:
-                type: string
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: User not found.
-        '500':
-          description: Internal server error.
+      put:
+        tags:
+          - Recompile
+        summary: Update a user's resume in the database and get the recompiled pdf
+        description: Update a user's resume information by their ID in the `users` table.
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  description: The LaTeX code for the resume, encoded as a URI-safe string.
+                  example: "QmVnaW4ge1xuICBcZG9jdW1lbnRjbGFzc3t..."
+        responses:
+          '200':
+            description: The pdf of the resume and the encoded latex
+            headers:
+              X-Latex-Code:
+                description: The encoded LaTeX code for the resume. URI Decode before use
+                schema:
+                  type: string
+            content:
+              application/pdf:
+                schema:
+                  type: string
+                  format: binary
+          '404':
+            description: User not found.
+          '500':
+            description: Internal server error.
 
 
   # Chat Routes (Socket.IO Events)
