@@ -1455,18 +1455,19 @@ paths:
         required: true
         schema:
           type: integer
-      - name: github_username
-        in: body
-        description: users github username (different than their github name)
-        required: false
-        schema:
-          type: string
-      - name: db_name
-        in: body
-        description: user's github name (what we store in the database under "name")
-        required: false
-        schema:
-          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                github_username:
+                  type: string
+                  description: User's GitHub username (different from their GitHub name)
+                db_name:
+                  type: string
+                  description: User's GitHub name (stored in the database under "name")
       responses:
         '200':
           description: The pdf of the resume and the encoded latex
